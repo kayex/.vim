@@ -14,6 +14,8 @@ set showmatch
 set tabstop=4
 set shiftwidth=4
 set colorcolumn=100
+set splitbelow
+set splitright
 "set termwinsize=20x0
 
 colo iceberg
@@ -31,27 +33,18 @@ call plug#begin()
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'tpope/vim-commentary'
+  Plug 'SirVer/ultisnips'
 call plug#end()
 
-" Go
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_operators = 1
-let g:go_auto_type_info = 1
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
-
-" Custom binds
+" Custom bindings
 let mapleader = ","
+
+imap <C-h> <Left>
+imap <C-l> <Right>
 
 " Open and source vimrc
 nmap <leader>1 :vsp ~/.vim/vimrc<CR>
 nmap <leader>2 :so ~/.vim/vimrc<CR>
-
-imap <C-h> <Left>
-imap <C-l> <Right>
 
 " Remove search highlights
 nnoremap <silent> <Leader>/ :set invhlsearch<CR>
@@ -60,6 +53,20 @@ nnoremap <silent> <Leader>/ :set invhlsearch<CR>
 nnoremap <silent> <Leader>. :lcl<CR>:ccl<CR>
 nnoremap <C-j> :lnext<CR>
 nnoremap <C-k> :lprev<CR>
+
+" Quick fix list
+nmap <C-e> :cnext<CR>
+nmap <C-u> :cprev<CR>
+
+" Terminal
+nnoremap <silent> <S-Tab> :terminal ++rows=20<CR>
+
+" Omni completion
+set completeopt-=preview
+inoremap <NUL> <C-x><C-o>
+inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
 " EasyMotion
 let g:EasyMotion_do_mapping = 0
@@ -71,33 +78,26 @@ map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
 
 " NERDTree
-nnoremap <Leader>' :NERDTreeToggle<CR>
+nnoremap <silent> <Leader>' :NERDTreeToggle<CR>
 
-" Go
+" vim-go
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
+let g:go_auto_type_info = 1
+let g:go_fmt_autosave = 1
+let g:go_fmt_command = "goimports"
+
 nnoremap <Leader>t :GoRename<CR>
 nnoremap <Leader>c :GoCallers<CR>
 nnoremap <Leader>r :GoTestFunc<CR>
 nnoremap <Leader>d :GoDoc<CR>
 nnoremap <Leader>f :GoFmt<CR>
 
-" Omni completion
-inoremap <NUL> <C-x><C-o>
-
-" set completeopt+=menuone,noinsert
-set completeopt-=preview
-
-" Automatically auto-complete on character insert
-" function! OpenCompletion()
-"     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
-"         call feedkeys("\<C-x>\<C-o>", "n")
-"     endif
-" endfunction
-
-" autocmd InsertCharPre *.go call OpenCompletion()
-
-inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<Tab>"
 
 " Write with sudo
 command W w !sudo tee % > /dev/null
